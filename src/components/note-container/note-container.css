@@ -1,0 +1,7 @@
+.note-container {
+    margin: 16px;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    grid-auto-rows: 200px;
+    gap: 16px;
+}

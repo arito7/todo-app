@@ -1,6 +1,7 @@
 .note {
-    
     background-color: #dede22;
-    width: 25%;
-    height: 250px;
+}
+
+.note > h5 {
+    padding-left: 16px;
 }
