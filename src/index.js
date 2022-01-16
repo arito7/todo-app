@@ -44,28 +44,14 @@ import './index.css';
         }
     })
 
-    const tasksContainer = TaskContainer(document);
+    const tasksContainer = TaskContainer(document, pubsub);
 
     
     textarea.classList.add('textbar-content');
     textbar.appendChild(textarea);
     textbar.appendChild(btntextarea);
-    // const noteContainer = noteContainerComponent(document);
-    // for (let i = 0; i < 6; i++){
-    //     const note = noteComponent('Yessuru');
-    //     noteContainer.appendChild(note.createNode(document));
-    // }
-
-    // const btn = document.createElement('button');
-    // btn.textContent = 'testeru masseru';
-    // btn.addEventListener('click', ()=>{
-    //     pubsub.emit('woah', 'superduperdata');
-    // })
-    // pubsub.on('woah',value => {console.log(value)});
-    // container.appendChild(btn)
     container.appendChild(textbar);
     container.appendChild(tasksContainer.container);
-    // container.appendChild(noteContainer);
     body.appendChild(header);
     body.appendChild(container);
 

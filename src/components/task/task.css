@@ -14,7 +14,27 @@
 
 .task-container > .task {
     display: flex;   
-    margin: 0 32px;
+    margin: 0 16px;
+    align-items: center;
+    gap: 16px;
+}
+
+/* checkbox */
+.task-container > .task > input{
+    height: 24px;
+    width: 24px;
+}
+
+.task-container > .task > img {
+    height: 100%;
+}
+
+.task-container > .task > img:hover{
+    scale: 1.1;
+}
+
+.task-container > .task > img:active{
+    scale: 1.2;
 }
 
 .task-container > .task > p {
@@ -25,3 +45,4 @@
     text-decoration: line-through;
     color: #565656;
 }
+
