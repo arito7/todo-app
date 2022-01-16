@@ -1,11 +1,26 @@
 .header-container {
-    text-align: center;
+    align-items: center;
     background-color: #343434;
+    display: flex;
     margin: 0;
     padding: 32px;
+    text-align: center;
 }
 
 .header-container > h1 {
-    margin: 0;
     color: #fefefe;
+    flex: 1;
+    margin: 0;
+}
+
+.header-container > button {
+    min-height: 48px;
+    border-radius: 8px;
+    background-color: rgba(19, 162, 206, 0.829);
+    border: none;
+    color: white;
+}
+
+.header-container > button:active{
+    scale: 1.2;
 }

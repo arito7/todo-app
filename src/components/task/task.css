@@ -1,11 +1,12 @@
 .task-container {
     margin: auto;
-    display: flex;
+    display: none;
     flex-direction: column;
     border-radius: 8px;
     max-width: 600px;
     padding: 8px 32px;
     background-color: #fefefe;
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
 }
 
 .task-container > hr {

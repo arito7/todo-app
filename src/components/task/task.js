@@ -61,7 +61,8 @@ const TaskContainer = (doc, pubsub = null) => {
     const _tasks = [];
 
     if(pubsub){
-        pubsub.on('delete',deleteTask)
+        pubsub.on('delete', deleteTask);
+        pubsub.on('task-change', render);
     }
 
     function deleteTask(text){
@@ -89,14 +90,20 @@ const TaskContainer = (doc, pubsub = null) => {
         }
     }
 
-    const render = () => {
-        _resetContainer();
-        for(let i = 0; i < _tasks.length; i++){
-            _container.appendChild(_tasks[i].createNode(doc, pubsub || null));
-            // dont add a hr after last task
-            if(i != _tasks.length - 1){
-                _container.appendChild(doc.createElement('hr'));
+    function render(){
+        if(_tasks.length === 0){
+            _container.style.display = 'none';
+            return
+        } else {
+            _resetContainer();
+            for(let i = _tasks.length - 1; i > -1; i--){
+                _container.appendChild(_tasks[i].createNode(doc, pubsub || null));
+                // dont add a hr after last task
+                if(i != 0){
+                    _container.appendChild(doc.createElement('hr'));
+                }
             }
+            _container.style.display = 'flex';
         }
     };
 
