@@ -1,0 +1,27 @@
+.task-container {
+    margin: auto;
+    display: flex;
+    flex-direction: column;
+    border-radius: 8px;
+    max-width: 600px;
+    padding: 8px 32px;
+    background-color: #fefefe;
+}
+
+.task-container > hr {
+    width: 100%;
+}
+
+.task-container > .task {
+    display: flex;   
+    margin: 0 32px;
+}
+
+.task-container > .task > p {
+    flex: 1;
+}
+
+.task-container > .task > .done {
+    text-decoration: line-through;
+    color: #565656;
+}
