@@ -10,7 +10,7 @@ import './index.css';
     const pubsub = PubSub();
     const storage = Storage();
 
-    const inputBar = InputBarComponent(document);
+    const inputBar = InputBarComponent();
     inputBar.setPlaceholderText('New Task');
     inputBar.btn.textContent = 'Add Task'
     inputBar.msg.textContent = 'Task already exists!'
@@ -32,7 +32,7 @@ import './index.css';
     const content = document.createElement('div'); // holds main content
     content.classList.add('content');
     const header = headerComponent(document);
-    const sidebar = Sidebar();
+    const sidebar = Sidebar(pubsub, storage);
     
     const tasksContainer = TaskContainer(document, pubsub, storage);
     

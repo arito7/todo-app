@@ -1,12 +1,12 @@
 import './input-bar.css';
 import { setAttributes } from '../utility';
 
-const InputBarComponent = (doc)=>{
+const InputBarComponent = ()=>{
     // create DOM elements
-    const node = doc.createElement('div');
-    const textarea = doc.createElement('input');
-    const btn = doc.createElement('button');
-    const msg = doc.createElement('p');
+    const node = document.createElement('div');
+    const textarea = document.createElement('input');
+    const btn = document.createElement('button');
+    const msg = document.createElement('p');
     
     // add classes
     node.classList.add('textbar');

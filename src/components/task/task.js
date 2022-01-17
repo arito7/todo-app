@@ -7,7 +7,8 @@ import DeleteIcon from './delete.svg';
 const Task = (()=>{
 
     function createTask(text, done = false){
-        return { text, done }
+        this.group = null;
+        return { text, done, group}
     }
 
     /**
