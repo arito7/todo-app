@@ -4,22 +4,22 @@ import DeleteIcon from './delete.svg';
  * @param {string} text 
  * @returns a Task object
  */
-const Task = (text)=>{
-    let _text = text;
-    let _done = false;
-    const type = 'task'
-    const content = _text;
+const Task = (()=>{
+
+    function createTask(text, done = false){
+        return { text, done }
+    }
 
     /**
      * Returns a DOM node
      * @param {document} doc 
      */
-    const createNode = (doc, pubsub = null) => {
+    const createNode = (doc, pubsub = null, taskObj) => {
         const container = doc.createElement('div');
         container.classList.add('task');
 
-        const text = doc.createElement('p');
-        text.textContent = _text;
+        const pText = doc.createElement('p');
+        pText.textContent = taskObj.text;
 
         const ckbox = doc.createElement('input');
         ckbox.setAttribute('type', 'checkbox');
@@ -28,38 +28,44 @@ const Task = (text)=>{
         deleteIcon.src = DeleteIcon;
         deleteIcon.addEventListener('click',()=>{
             if (pubsub){
-                pubsub.emit('delete', _text);
+                pubsub.emit('delete', taskObj.text);
             }
         });
-        if (_done){
+        if (taskObj.done){
             ckbox.setAttribute('checked', 'true');
-            text.classList.add('done');
+            pText.classList.add('done');
         }
         ckbox.addEventListener('input', ()=>{
-            console.log('triggered')
-            _done = !_done;
-            if (_done){
-                text.classList.add('done');
+            taskObj.done = !taskObj.done;
+            if (taskObj.done){
+                pText.classList.add('done');
             } else {
-                text.classList.remove('done');
+                pText.classList.remove('done');
             }
         })
 
         container.appendChild(ckbox);
-        container.appendChild(text);
+        container.appendChild(pText);
         container.appendChild(deleteIcon);
-
+        
         return container;
     }
-     
-    return {createNode, type, content};
-};
+    
+    return {createNode, createTask};
+})();
 
-const TaskContainer = (doc, pubsub = null) => {
+const TaskContainer = (doc, pubsub = null, storage = null) => {
+    const TASKS_STORAGE_SLOT = 0;
     const _container = doc.createElement('div');
+    const container = _container; // for exposing
     _container.classList.add('task-container');
-    const _tasks = [];
-
+    let _tasks = [];
+    (()=>{
+        if(localStorage){
+            _tasks = JSON.parse(storage.get(TASKS_STORAGE_SLOT));
+            render();
+        }
+    })()
     if(pubsub){
         pubsub.on('delete', deleteTask);
         pubsub.on('task-change', render);
@@ -67,8 +73,9 @@ const TaskContainer = (doc, pubsub = null) => {
 
     function deleteTask(text){
         for(let i = 0; i < _tasks.length; i++){
-            if (_tasks[i].content === text){
+            if (_tasks[i].text === text){
                 _tasks.splice(i, 1);
+                updateLocalStorage();
             }
         }
         render();
@@ -77,11 +84,9 @@ const TaskContainer = (doc, pubsub = null) => {
      * @param {Task} task 
      */
     const addTask = (task) => {
-        if(task.type === 'task'){
-            _tasks.push(task);
-        } else {
-            console.log('Not a task type')
-        }
+        const newTask = Task.createTask(task);
+        _tasks.push(newTask);
+        updateLocalStorage();
     };
 
     function _resetContainer() {
@@ -89,15 +94,19 @@ const TaskContainer = (doc, pubsub = null) => {
             _container.removeChild(_container.firstChild)
         }
     }
-
+    
     function render(){
+        // don't render if there are no tasks
         if(_tasks.length === 0){
             _container.style.display = 'none';
             return
         } else {
             _resetContainer();
+            if(storage){
+                _tasks = JSON.parse(storage.get(0));
+            }
             for(let i = _tasks.length - 1; i > -1; i--){
-                _container.appendChild(_tasks[i].createNode(doc, pubsub || null));
+                _container.appendChild(Task.createNode(doc, pubsub, _tasks[i]));
                 // dont add a hr after last task
                 if(i != 0){
                     _container.appendChild(doc.createElement('hr'));
@@ -106,21 +115,26 @@ const TaskContainer = (doc, pubsub = null) => {
             _container.style.display = 'flex';
         }
     };
-
+    
     /**
      * @param {string} text title of task 
      * @returns {boolean}
      */
     const contains = (text) => {
         for (let task of _tasks){
-            if (task.content === text){
+            if (task.text === text && !task.done){
                 return true;
             }
         }
     }
-
-    const container = _container;
-
+    
+    
+    function updateLocalStorage(){
+        if(storage){
+            storage.add(TASKS_STORAGE_SLOT, JSON.stringify(_tasks));
+        }
+    }
+    
     return {render, addTask, container, contains}
 }
-export {Task, TaskContainer};
+export {TaskContainer};

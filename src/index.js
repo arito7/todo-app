@@ -1,10 +1,12 @@
 import { headerComponent } from "./components/header/header";
 import { PubSub } from "./components/pubsub";
-import { Task, TaskContainer} from "./components/task/task";
+import { TaskContainer} from "./components/task/task";
+import { Storage } from "./components/storage/storage";
 import './index.css';
 
 (()=>{    
     const pubsub = PubSub();
+    const storage = Storage();
 
     const inputBar = (()=>{
         const inputBar = document.createElement('div');
@@ -22,7 +24,6 @@ import './index.css';
             autocorrect: 'on'
         })
         btntextarea.toggle = (e) => {
-            console.log(e == true)
             if(e){
                 btntextarea.style.display = e.target.value !== '' ? 'block' : 'none';
             } else {
@@ -34,7 +35,7 @@ import './index.css';
         });
         btntextarea.addEventListener('click', ()=>{
             if (!tasksContainer.contains(textarea.value)){
-                tasksContainer.addTask(Task(textarea.value))   
+                tasksContainer.addTask(textarea.value);   
                 pubsub.emit('task-change');
                 textarea.value = '';
                 btntextarea.toggle();
@@ -60,7 +61,7 @@ import './index.css';
     const header = headerComponent(document);
     container.classList.add('container');
     
-    const tasksContainer = TaskContainer(document, pubsub);
+    const tasksContainer = TaskContainer(document, pubsub, storage);
     
     container.appendChild(inputBar);
     container.appendChild(tasksContainer.container);
