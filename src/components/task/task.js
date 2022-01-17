@@ -10,6 +10,13 @@ const Task = (()=>{
         taskStatusChange: 'task-status-change',
     }
 
+    const CSS = {
+        deleteIcon: 'task-icon',
+        groupLabel: 'group-label',
+        checkbox: 'task-checkbox',
+        taskName: 'task-name',
+    }
+
     function createTask(text, done = false){
         let group = null;
         return { text, done, group}
@@ -17,19 +24,26 @@ const Task = (()=>{
 
     /**
      * Returns a DOM node
-     * @param {document} doc 
      */
-    const createNode = (doc, pubsub = null, taskObj) => {
-        const container = doc.createElement('div');
-        const pText = doc.createElement('p');
-        const ckbox = doc.createElement('input');
+    const createNode = (pubsub = null, taskObj) => {
+        const container = document.createElement('div');
+        const pText = document.createElement('p');
+        const ckbox = document.createElement('input');
         const deleteIcon = new Image()
         const dragIcon = new Image()
+        let groupLabel = null;
+        if(taskObj.group !== null && taskObj.group !== ''){
+            groupLabel = document.createElement('p');
+            groupLabel.classList.add(CSS.groupLabel)
+            groupLabel.textContent = taskObj.group;
+        }
 
         // add classes
         container.classList.add('task');
         dragIcon.classList.add('draggable');
-        
+        deleteIcon.classList.add(CSS.deleteIcon);
+        ckbox.classList.add(CSS.checkbox);
+        pText.classList.add(CSS.taskName);
         // add attributes
         dragIcon.setAttribute('draggable', 'true');
         ckbox.setAttribute('type', 'checkbox');
@@ -50,7 +64,7 @@ const Task = (()=>{
 
         function deleteTaskHandler(){
             if (pubsub){
-                pubsub.emit(Task.events.deleteTask, taskObj.text);
+                pubsub.emit(Task.EVENTS.deleteTask, taskObj.text);
             }
         };
         
@@ -68,15 +82,19 @@ const Task = (()=>{
         container.appendChild(dragIcon);
         container.appendChild(ckbox);
         container.appendChild(pText);
+        if(groupLabel){
+            container.appendChild(groupLabel);
+        }
         container.appendChild(deleteIcon);
 
         function dragStartHandler(e){
+            console.log('drag started')
             container.classList.add('dragging');
             e.dataTransfer.setData('text/plain', pText.textContent);
-            e.dataTransfer.effectAllowed = "link";
         }
 
         function dragEndHandler(e){
+            console.log('drag ended')
             container.classList.remove('dragging');
         }
 
@@ -122,6 +140,7 @@ const TaskContainer = (doc, pubsub = null, storage = null) => {
         if (i > -1) {
             _tasks[i].group = info.group;
             updateStorage();
+            render();
         }
     }
 
@@ -160,7 +179,7 @@ const TaskContainer = (doc, pubsub = null, storage = null) => {
                     continue;
                 }
             }
-            _container.appendChild(Task.createNode(doc, pubsub, _tasks[i]));
+            _container.appendChild(Task.createNode(pubsub, _tasks[i]));
         }
         if(_container.hasChildNodes()){
             _container.style.display = 'flex';

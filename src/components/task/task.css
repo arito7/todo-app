@@ -21,27 +21,27 @@
 }
 
 /* checkbox */
-.task-container > .task > input{
+.task-checkbox{
     height: 24px;
     width: 24px;
 }
-.task-container > .task > input:hover{
+.task-checkbox:hover{
     cursor: pointer;
 }
 
-.task-container > .task > img {
+.task-icon {
     height: 100%;
 }
 
-.task-container > .task > img:hover{
+.task-icon:hover{
     scale: 1.1;
 }
 
-.task-container > .task > img:active{
+.task-icon:active{
     scale: 1.2;
 }
 
-.task-container > .task > p {
+.task-name {
     flex: 1;
 }
 
@@ -56,4 +56,11 @@
 
 .draggable:hover {
     cursor: move;
+}
+
+.group-label {
+    background-color: #ababab;
+    border-radius: 16px;
+    padding: 8px 16px;
+    margin: 0;
 }

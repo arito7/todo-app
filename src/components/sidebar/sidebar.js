@@ -86,10 +86,10 @@ const Sidebar = (pubsub = null, storage = null)=>{
             
             remove.src = RemoveIcon;
             text.textContent = _groups[i];
-            c.addEventListener('drop', dropHandler);
             c.addEventListener('click', () => {clickListener(c)});
-            c.addEventListener('dragleave', () => {dragLeaveHandler(c)});
-            c.addEventListener('dragover', () => {dragoverHandler(c)});
+            c.addEventListener('dragleave', (e) => {dragLeaveHandler(e, c)});
+            c.addEventListener('dragover', (e) => {dragoverHandler(e, c)});
+            c.addEventListener('drop', dropHandler);
             remove.addEventListener('click',() =>{
                 removeGroup(i);
                 render();
@@ -112,17 +112,27 @@ const Sidebar = (pubsub = null, storage = null)=>{
             console.log(src.textContent)
         }
     }
-    function dragoverHandler(src){
-        // e.preventDefault();
+    function dragoverHandler(e, src){
+        e.preventDefault();
+        console.log('dragging over')
         src.id = 'dragged-over';
     }
     
-    function dragLeaveHandler(src){
+    function dragLeaveHandler(e, src){
+        e.preventDefault()
+        console.log('drag leaving')
         src.id = '';
     }
 
     function dropHandler(e) {
         e.preventDefault();
+        const draggedOver = document.querySelectorAll('#dragged-over');
+        if (draggedOver){
+            draggedOver.forEach((e)=>{
+                e.id = '';
+            })
+        }
+        console.log('dropped')
         if(pubsub){
             const taskName = e.dataTransfer.getData('text/plain');
             const group = e.target.textContent;
