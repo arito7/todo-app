@@ -1,77 +1,48 @@
 import { headerComponent } from "./components/header/header";
 import { PubSub } from "./components/pubsub";
-import { TaskContainer} from "./components/task/task";
+import { TaskContainer } from "./components/task/task";
 import { Storage } from "./components/storage/storage";
+import { Sidebar } from "./components/sidebar/sidebar";
+import { InputBarComponent } from "./components/input-bar/input-bar";
 import './index.css';
 
 (()=>{    
     const pubsub = PubSub();
     const storage = Storage();
 
-    const inputBar = (()=>{
-        const inputBar = document.createElement('div');
-        inputBar.classList.add('textbar');
-        const textarea = document.createElement('input');
-        const btntextarea = document.createElement('button');
-        btntextarea.textContent = 'Add Task';
-        setAttributes(textarea, {
-            type: 'text',
-            maxlength: '40',
-            placeholder: 'New Task',
-            size: '40',
-            minlength: '1',
-            spellcheck: 'true',
-            autocorrect: 'on'
-        })
-        btntextarea.toggle = (e) => {
-            if(e){
-                btntextarea.style.display = e.target.value !== '' ? 'block' : 'none';
-            } else {
-                btntextarea.style.display = btntextarea.style.display === 'block' ? 'none' : 'block';
-            }
+    const inputBar = InputBarComponent(document);
+    inputBar.setPlaceholderText('New Task');
+    inputBar.btn.textContent = 'Add Task'
+    inputBar.msg.textContent = 'Task already exists!'
+    inputBar.btn.addEventListener('click', ()=>{
+        if (!tasksContainer.contains(inputBar.textarea.value)){
+            tasksContainer.addTask(inputBar.textarea.value);   
+            pubsub.emit('task-change');
+            inputBar.textarea.value = '';
+            inputBar.btn.toggle();
+            inputBar.msg.style.display = 'none';
+        } else {
+            inputBar.msg.style.display = 'block';
         }
-        textarea.addEventListener('input', e =>{
-            btntextarea.toggle(e);
-        });
-        btntextarea.addEventListener('click', ()=>{
-            if (!tasksContainer.contains(textarea.value)){
-                tasksContainer.addTask(textarea.value);   
-                pubsub.emit('task-change');
-                textarea.value = '';
-                btntextarea.toggle();
-                existsMsg.style.display = 'none';
-            } else {
-                existsMsg.style.display = 'block';
-            }
-        })
-        const existsMsg = document.createElement('p');
-        existsMsg.textContent = 'This task already exists!';
-        existsMsg.classList.add('exists-msg');
-
-        textarea.classList.add('textbar-content');
-        inputBar.appendChild(textarea);
-        inputBar.appendChild(btntextarea);
-        inputBar.appendChild(existsMsg);
-        
-        return inputBar;
-    })();
-
+    })
+    
     const body = document.querySelector('body');
-    const container = document.createElement('div');
-    const header = headerComponent(document);
+    const container = document.createElement('div'); // holds sidebar and main content
     container.classList.add('container');
+    const content = document.createElement('div'); // holds main content
+    content.classList.add('content');
+    const header = headerComponent(document);
+    const sidebar = Sidebar();
     
     const tasksContainer = TaskContainer(document, pubsub, storage);
     
-    container.appendChild(inputBar);
-    container.appendChild(tasksContainer.container);
+    content.appendChild(inputBar.node);
+    content.appendChild(tasksContainer.container);
+    container.appendChild(sidebar);
+    container.appendChild(content);
     body.appendChild(header);
     body.appendChild(container);
     
-    function setAttributes(domElement, attributes){
-        for (let attr in attributes){
-            domElement.setAttribute(attr, attributes[attr]);
-        }
-    }
+    
     
 })();

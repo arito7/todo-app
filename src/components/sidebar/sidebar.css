@@ -1,0 +1,30 @@
+.sidebar {
+    background-color: #dedede;
+    display: flex;
+    flex-direction: column;
+    max-width: 30%;
+    justify-content: start;
+}
+
+.sidebar > button {
+    padding: 16px;
+    margin: 16px;
+    background-color: #fcfcfc;
+    border-color: #acacac;
+}
+
+.sidebar > .menu-item-container > .menu-item {
+    padding: 16px;
+    border-top: 1px solid #bababa;
+}
+
+.sidebar > .menu-item-container > .menu-item:nth-child(1){
+    border-top: none;
+}
+.sidebar > .menu-item-container > .menu-item > .menu-item-name {
+    margin: 0;
+    padding-top: 0;
+}
+.sidebar > .menu-item-container > .menu-item > .menu-item-name:hover {
+    scale: 0.9;
+}
