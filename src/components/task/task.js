@@ -73,6 +73,7 @@ const Task = (()=>{
         function dragStartHandler(e){
             container.classList.add('dragging');
             e.dataTransfer.setData('text/plain', pText.textContent);
+            e.dataTransfer.effectAllowed = "link";
         }
 
         function dragEndHandler(e){

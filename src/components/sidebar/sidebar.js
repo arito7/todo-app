@@ -63,6 +63,10 @@ const Sidebar = (pubsub = null, storage = null)=>{
 
     function render(){
         clearNode(menuItemContainer);
+        
+        if(!document.querySelector('#selected')){
+            showAllBtn.id = 'selected';
+        }
 
         if(storage){
             const temp = JSON.parse(storage.get(GROUPS_STORAGE_SLOT));
@@ -82,15 +86,17 @@ const Sidebar = (pubsub = null, storage = null)=>{
             
             remove.src = RemoveIcon;
             text.textContent = _groups[i];
-            c.addEventListener('dragover', dragoverHandler)
-            c.addEventListener('drop', dropHandler)
-            c.addEventListener('click', ()=>{clickListener(c)});
-            remove.addEventListener('click',()=>{
+            c.addEventListener('drop', dropHandler);
+            c.addEventListener('click', () => {clickListener(c)});
+            c.addEventListener('dragleave', () => {dragLeaveHandler(c)});
+            c.addEventListener('dragover', () => {dragoverHandler(c)});
+            remove.addEventListener('click',() =>{
                 removeGroup(i);
                 render();
             });
             
             c.appendChild(text);            
+            c.appendChild(remove);
             menuItemContainer.appendChild(c);            
         }
     }
@@ -106,8 +112,13 @@ const Sidebar = (pubsub = null, storage = null)=>{
             console.log(src.textContent)
         }
     }
-    function dragoverHandler(e){
-        e.preventDefault();
+    function dragoverHandler(src){
+        // e.preventDefault();
+        src.id = 'dragged-over';
+    }
+    
+    function dragLeaveHandler(src){
+        src.id = '';
     }
 
     function dropHandler(e) {
