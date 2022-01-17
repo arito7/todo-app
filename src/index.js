@@ -34,6 +34,10 @@ import './index.css';
     const header = headerComponent(document);
     const sidebar = Sidebar(pubsub, storage);
     
+    addEventListener('drop',(e)=>{
+        console.log(e)
+    })
+
     const tasksContainer = TaskContainer(document, pubsub, storage);
     
     content.appendChild(inputBar.node);

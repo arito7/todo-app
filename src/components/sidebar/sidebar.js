@@ -1,56 +1,149 @@
 import './sidebar.css';
 import { InputBarComponent } from '../input-bar/input-bar';
 import { clearNode } from '../utility';
+import RemoveIcon from './remove.svg';
+
+/**
+ * Events:
+ *  'group-change' : triggers when a group is added/removed
+ *  'selection-change' : triggers when side bar selection changes
+ * @param {} pubsub 
+ * @param {} storage 
+ * @returns 
+ */
 
 const Sidebar = (pubsub = null, storage = null)=>{
+    const CSS = {
+        selected: 'selected',
+        sidebar: 'sidebar',
+        showAll: 'show-all',
+        menuItem: 'menu-item',
+    }
+    const EVENTS = {
+        groupUpdated: 'group-updated',
+        selectionChange: 'selection-change',
+    }
+    const UI = {
+        showAllBtn: 'Show All',
+        createNewGroupBtn: 'Create New Group',
+        warningMsg: 'Group already exists!',
+        inputBarPlaceholder: 'New Group'
+    }
     let _groups = [];
     const GROUPS_STORAGE_SLOT = 1;
+
     // create DOM elements
     const container = document.createElement('div');
     const menuItemContainer = document.createElement('div');
     const inputbar = InputBarComponent();
-
+    const showAllBtn = document.createElement('div');
+    
     render();
+
     // add classes
-    container.classList.add('sidebar');
+    showAllBtn.classList.add(CSS.showAll);
+    showAllBtn.classList.add(CSS.menuItem)
+    container.classList.add(CSS.sidebar);
     menuItemContainer.classList.add('menu-item-container');
 
-    inputbar.btn.textContent = 'Create New Group';
-    inputbar.setPlaceholderText('New Group');
+    showAllBtn.textContent = UI.showAllBtn;
+    showAllBtn.addEventListener('click',()=>{clickListener(showAllBtn)});
+    inputbar.btn.textContent = UI.createNewGroupBtn;
+    inputbar.setPlaceholderText(UI.inputBarPlaceholder);
     inputbar.btn.addEventListener('click',()=>{
         if(addMenuItem(inputbar.textarea.value)){
             inputbar.textarea.value = '';
+            inputbar.btn.toggle();
         };
     })
-    inputbar.msg.textContent = 'Group already exists!';
+    inputbar.msg.textContent = UI.warningMsg;
     inputbar.setMsgShowCondition(()=>{
         return _groups.includes(inputbar.textarea.value); 
     })
+
     function render(){
-        if(storage){
-            _groups = JSON.parse(storage.get(GROUPS_STORAGE_SLOT));
-        }
         clearNode(menuItemContainer);
+
+        if(storage){
+            const temp = JSON.parse(storage.get(GROUPS_STORAGE_SLOT));
+            if(temp){
+                _groups = temp;
+            }
+        }
+
         for (let i = _groups.length - 1; i > -1; i--){
             const c = document.createElement('div');
-            c.classList.add('menu-item');
             const text = document.createElement('h5');
+            const remove = new Image();
+            
+            c.classList.add(CSS.menuItem);
             text.classList.add('menu-item-name');
+            remove.classList.add('icon-button');
+            
+            remove.src = RemoveIcon;
             text.textContent = _groups[i];
-            c.appendChild(text);
+            c.addEventListener('dragover', dragoverHandler)
+            c.addEventListener('drop', dropHandler)
+            c.addEventListener('click', ()=>{clickListener(c)});
+            remove.addEventListener('click',()=>{
+                removeGroup(i);
+                render();
+            });
+            
+            c.appendChild(text);            
             menuItemContainer.appendChild(c);            
         }
     }
+    function clickListener(src){
+        const currentSelection = document.querySelector('#selected');
+        if (currentSelection === src){ return }
+        if(currentSelection){
+            currentSelection.id = '';
+        }
+        src.id = 'selected';
+        if (pubsub) {
+            pubsub.emit(EVENTS.selectionChange, src.textContent)
+            console.log(src.textContent)
+        }
+    }
+    function dragoverHandler(e){
+        e.preventDefault();
+    }
+
+    function dropHandler(e) {
+        e.preventDefault();
+        if(pubsub){
+            const taskName = e.dataTransfer.getData('text/plain');
+            const group = e.target.textContent;
+            pubsub.emit('task-moved', {taskName, group});
+        }
+    }
     
+    function removeGroup(index){
+        _groups.splice(index, 1);
+        updateStorage();
+        if (pubsub){
+            pubsub.emit(EVENTS.groupUpdated, _groups)
+        }
+    }
+
+    function addGroup(title){
+        _groups.push(title);
+        updateStorage();
+        if(pubsub){
+            pubsub.emit(EVENTS.groupUpdated, _groups);
+        }
+    }
+
+    function updateStorage(){
+        if(storage){
+            storage.add(GROUPS_STORAGE_SLOT, JSON.stringify(_groups));
+        }
+    }
+
     function addMenuItem(title){
         if (inputbar.textarea.value !== '' && !_groups.includes(inputbar.textarea.value)){
-            _groups.push(title);
-            if(storage){
-                storage.add(GROUPS_STORAGE_SLOT, JSON.stringify(_groups));
-            }
-            if(pubsub){
-                pubsub.emit('groups-changed', _groups.slice());
-            }
+            addGroup(title);
             render();
             return true
         }
@@ -58,6 +151,7 @@ const Sidebar = (pubsub = null, storage = null)=>{
     
     // append
     container.appendChild(inputbar.node);
+    container.appendChild(showAllBtn);
     container.appendChild(menuItemContainer);
     
     return container;

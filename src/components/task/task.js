@@ -1,13 +1,17 @@
 import './task.css';
 import DeleteIcon from './delete.svg';
-/**
- * @param {string} text 
- * @returns a Task object
- */
+import DragIcon from './drag-icon.svg';
+import { clearNode } from '../utility';
+
 const Task = (()=>{
 
+    const EVENTS = {
+        deleteTask: 'delete',
+        taskStatusChange: 'task-status-change',
+    }
+
     function createTask(text, done = false){
-        this.group = null;
+        let group = null;
         return { text, done, group}
     }
 
@@ -17,42 +21,68 @@ const Task = (()=>{
      */
     const createNode = (doc, pubsub = null, taskObj) => {
         const container = doc.createElement('div');
-        container.classList.add('task');
-
         const pText = doc.createElement('p');
-        pText.textContent = taskObj.text;
-
         const ckbox = doc.createElement('input');
-        ckbox.setAttribute('type', 'checkbox');
-
         const deleteIcon = new Image()
+        const dragIcon = new Image()
+
+        // add classes
+        container.classList.add('task');
+        dragIcon.classList.add('draggable');
+        
+        // add attributes
+        dragIcon.setAttribute('draggable', 'true');
+        ckbox.setAttribute('type', 'checkbox');
+        
+
+        pText.textContent = taskObj.text;
+        dragIcon.src = DragIcon;
         deleteIcon.src = DeleteIcon;
-        deleteIcon.addEventListener('click',()=>{
-            if (pubsub){
-                pubsub.emit('delete', taskObj.text);
-            }
-        });
+        dragIcon.addEventListener('dragstart', dragStartHandler);
+        dragIcon.addEventListener('dragend', dragEndHandler);
+        deleteIcon.addEventListener('click', deleteTaskHandler);
+        ckbox.addEventListener('input', inputHandler);
+        
         if (taskObj.done){
             ckbox.setAttribute('checked', 'true');
             pText.classList.add('done');
         }
-        ckbox.addEventListener('input', ()=>{
+
+        function deleteTaskHandler(){
+            if (pubsub){
+                pubsub.emit(Task.events.deleteTask, taskObj.text);
+            }
+        };
+        
+        function inputHandler(){
             taskObj.done = !taskObj.done;
+            pubsub.emit(EVENTS.taskStatusChange, taskObj);
             if (taskObj.done){
                 pText.classList.add('done');
             } else {
                 pText.classList.remove('done');
             }
-        })
+        }
 
+        // append
+        container.appendChild(dragIcon);
         container.appendChild(ckbox);
         container.appendChild(pText);
         container.appendChild(deleteIcon);
-        
+
+        function dragStartHandler(e){
+            container.classList.add('dragging');
+            e.dataTransfer.setData('text/plain', pText.textContent);
+        }
+
+        function dragEndHandler(e){
+            container.classList.remove('dragging');
+        }
+
         return container;
     }
     
-    return {createNode, createTask};
+    return {createNode, createTask, EVENTS};
 })();
 
 const TaskContainer = (doc, pubsub = null, storage = null) => {
@@ -61,22 +91,44 @@ const TaskContainer = (doc, pubsub = null, storage = null) => {
     const container = _container; // for exposing
     _container.classList.add('task-container');
     let _tasks = [];
-    (()=>{
-        if(localStorage){
-            _tasks = JSON.parse(storage.get(TASKS_STORAGE_SLOT));
-            render();
-        }
-    })()
+
+    render();
+    
     if(pubsub){
-        pubsub.on('delete', deleteTask);
+        pubsub.on(Task.EVENTS.taskStatusChange, updateTask)
+        pubsub.on(Task.EVENTS.deleteTask, deleteTask);
         pubsub.on('task-change', render);
+        pubsub.on('task-moved', moveTask);
+        pubsub.on('group-change', groups => {
+            console.log(groups);
+        })
+        pubsub.on('selection-change', (groupName) => {
+            render(groupName);
+        })
+    }
+    
+    function updateTask(taskObj){
+        for(let task of _tasks){
+            if(task.text === taskObj.text){
+                task.done = taskObj.done;
+                updateStorage();
+            }
+        }
+    }
+    function moveTask(info){
+        console.log(info);
+        const i = _tasks.findIndex( e => e.text === info.taskName );
+        if (i > -1) {
+            _tasks[i].group = info.group;
+            updateStorage();
+        }
     }
 
     function deleteTask(text){
         for(let i = 0; i < _tasks.length; i++){
             if (_tasks[i].text === text){
                 _tasks.splice(i, 1);
-                updateLocalStorage();
+                updateStorage();
             }
         }
         render();
@@ -87,32 +139,29 @@ const TaskContainer = (doc, pubsub = null, storage = null) => {
     const addTask = (task) => {
         const newTask = Task.createTask(task);
         _tasks.push(newTask);
-        updateLocalStorage();
+        updateStorage();
     };
-
-    function _resetContainer() {
-        while(_container.hasChildNodes()){
-            _container.removeChild(_container.firstChild)
-        }
-    }
     
-    function render(){
-        // don't render if there are no tasks
-        if(_tasks.length === 0){
-            _container.style.display = 'none';
-            return
-        } else {
-            _resetContainer();
-            if(storage){
-                _tasks = JSON.parse(storage.get(0));
+    function render(groupName = null){
+        _container.style.display = 'none';
+        
+        if(storage){
+            const temp = JSON.parse(storage.get(0));
+            if(temp){
+                _tasks = temp;
             }
-            for(let i = _tasks.length - 1; i > -1; i--){
-                _container.appendChild(Task.createNode(doc, pubsub, _tasks[i]));
-                // dont add a hr after last task
-                if(i != 0){
-                    _container.appendChild(doc.createElement('hr'));
+        }
+        // don't render if there are no tasks
+        clearNode(_container);
+        for(let i = _tasks.length - 1; i > -1; i--){
+            if (groupName !== null && groupName !== 'Show All'){
+                if(_tasks[i].group !== groupName){
+                    continue;
                 }
             }
+            _container.appendChild(Task.createNode(doc, pubsub, _tasks[i]));
+        }
+        if(_container.hasChildNodes()){
             _container.style.display = 'flex';
         }
     };
@@ -129,8 +178,7 @@ const TaskContainer = (doc, pubsub = null, storage = null) => {
         }
     }
     
-    
-    function updateLocalStorage(){
+    function updateStorage(){
         if(storage){
             storage.add(TASKS_STORAGE_SLOT, JSON.stringify(_tasks));
         }

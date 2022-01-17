@@ -13,18 +13,25 @@
     border-color: #acacac;
 }
 
-.sidebar > .menu-item-container > .menu-item {
+.menu-item {
     padding: 16px;
-    border-top: 1px solid #bababa;
+    margin: 8px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+}
+.menu-item:hover{
+    background-color: #aeaeae;
 }
 
-.sidebar > .menu-item-container > .menu-item:nth-child(1){
-    border-top: none;
-}
 .sidebar > .menu-item-container > .menu-item > .menu-item-name {
     margin: 0;
+    flex: 1;
     padding-top: 0;
 }
-.sidebar > .menu-item-container > .menu-item > .menu-item-name:hover {
-    scale: 0.9;
+
+#selected {
+    background-color: #565656;
+    color: #fefefe;
 }

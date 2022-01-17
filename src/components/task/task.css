@@ -3,7 +3,7 @@
     display: none;
     flex-direction: column;
     border-radius: 8px;
-    max-width: 600px;
+    max-width: 90%;
     padding: 8px 32px;
     background-color: #fefefe;
     box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
@@ -24,6 +24,9 @@
 .task-container > .task > input{
     height: 24px;
     width: 24px;
+}
+.task-container > .task > input:hover{
+    cursor: pointer;
 }
 
 .task-container > .task > img {
@@ -47,3 +50,10 @@
     color: #565656;
 }
 
+.dragging {
+    opacity: 0.5;
+}
+
+.draggable:hover {
+    cursor: move;
+}
