@@ -1,6 +1,6 @@
 # Todo App
 
-### [Live Demo]()
+### [Live Demo](https://arito7.github.io/todo-app/)
 
 Created using HTML, CSS, JS, Webpack
 
