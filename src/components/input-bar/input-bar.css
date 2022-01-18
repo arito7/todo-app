@@ -1,7 +1,5 @@
-
 .textbar {
     padding: 0;
-    align-items: center;
     text-align: center;
     max-width: 90%;
     margin: 16px auto;
@@ -13,23 +11,44 @@
 }
 
 .textbar > .textbar-content {
+    flex: 1;
     padding: 4px;
     max-width: 90%;
     border: none;
     font-size: 1.2em;
     resize: none;
-    border-radius: 8px;
-    margin: 16px;
+    margin: 32px auto 8px auto;
+    border-bottom: 1px solid #dedede;
 }
 
 .textbar > .textbar-content:focus{
     outline: none;
 }
-.textbar > button {
+
+.input-bar-date-btn-container{
+    align-items: center;
+    flex: 1;
     display: none;
-    align-self: flex-end;
-    margin: 0 16px 16px 16px;
+}
+
+.input-bar-date-label {
+    margin-right: 8px; 
+    font-size: 1.1em;
+    margin-left: 16px;
+    cursor: pointer;
+}
+
+.input-bar-date {
+    cursor: pointer;
+    border: none;
+    font-size: 1.1em;
+    margin-left: 16px;
+}
+
+.input-bar-btn {
+    margin: 16px 16px 16px auto;
     background-color: inherit;
+    justify-self: end;
 }
 
 .textbar > .exists-msg {
@@ -38,6 +57,7 @@
     padding: 16px;
     display: none;
     margin: 0;
+    flex: 1;
     border-bottom-left-radius: inherit;
     border-bottom-right-radius: inherit;
 }

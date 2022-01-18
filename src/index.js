@@ -10,7 +10,7 @@ import './index.css';
     const pubsub = PubSub();
     const storage = Storage();
 
-    const inputBar = InputBarComponent();
+    const inputBar = InputBarComponent(true);
     inputBar.setPlaceholderText('New Task');
     inputBar.btn.textContent = 'Add Task'
     inputBar.msg.textContent = 'Task already exists!'

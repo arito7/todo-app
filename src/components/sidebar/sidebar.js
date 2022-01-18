@@ -56,6 +56,7 @@ const Sidebar = (pubsub = null, storage = null)=>{
             inputbar.btn.toggle();
         };
     })
+    inputbar.btn.style.margin = '0 auto 8px auto';
     inputbar.msg.textContent = UI.warningMsg;
     inputbar.setMsgShowCondition(()=>{
         return _groups.includes(inputbar.textarea.value); 

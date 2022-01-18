@@ -1,17 +1,50 @@
 import './input-bar.css';
 import { setAttributes } from '../utility';
 
-const InputBarComponent = ()=>{
+const InputBarComponent = (enableDate = false)=>{
+
+    const CSS = {
+        dateContainer: 'input-bar-date-container',
+        date: 'input-bar-date',
+        dateLabel: 'input-bar-date-label',
+        addbtn: 'input-bar-btn',
+        dateAddbtnContainer: 'input-bar-date-btn-container'
+    }
+
     // create DOM elements
     const node = document.createElement('div');
     const textarea = document.createElement('input');
     const btn = document.createElement('button');
     const msg = document.createElement('p');
+    const dateAddbtnContainer = document.createElement('div');
+    if(enableDate){
+        const date = document.createElement('input');
+        const label = document.createElement('label')
+        label.classList.add(CSS.dateLabel);
+        date.classList.add(CSS.date);
+        date.id = 'date';
+        
+        label.setAttribute('for', 'date');
+        label.textContent = 'Due Date';
+        setAttributes(date, {
+            type: 'date',
+        })
+        dateAddbtnContainer.appendChild(label);
+        dateAddbtnContainer.appendChild(date);
+    }
+    dateAddbtnContainer.show = () => {
+        dateAddbtnContainer.style.display = 'flex';
+    }
+    dateAddbtnContainer.hide = () => {
+        dateAddbtnContainer.style.display = 'none';
+    }
     
     // add classes
     node.classList.add('textbar');
     textarea.classList.add('textbar-content');
     msg.classList.add('exists-msg');
+    btn.classList.add(CSS.addbtn)
+    dateAddbtnContainer.classList.add(CSS.dateAddbtnContainer)
 
     // default attributes
     setAttributes(textarea, {
@@ -39,21 +72,24 @@ const InputBarComponent = ()=>{
         textarea.setAttribute('placeholder', text);
     };
 
-    btn.toggle = (e) => {
-        if(e){
-            btn.style.display = e.target.value !== '' ? 'block' : 'none';
-        } else {
-            btn.style.display = btn.style.display === 'block' ? 'none' : 'block';
+    btn.addEventListener('click',()=>{
+        if(!textarea.value){
+            dateAddbtnContainer.hide()
         }
-    }
+    })
 
     textarea.addEventListener('input', e => {
-        btn.toggle(e);
+        if(e.target.value){
+            dateAddbtnContainer.show();
+        } else {
+            dateAddbtnContainer.hide();
+        }
     });
 
     // append
     node.appendChild(textarea);
-    node.appendChild(btn);
+    dateAddbtnContainer.appendChild(btn);
+    node.appendChild(dateAddbtnContainer);
     node.appendChild(msg);
     
     return {node, textarea, btn, msg, setPlaceholderText, setMsgShowCondition};
