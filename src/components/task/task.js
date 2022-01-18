@@ -15,11 +15,12 @@ const Task = (()=>{
         groupLabel: 'group-label',
         checkbox: 'task-checkbox',
         taskName: 'task-name',
+        dateLabel: 'task-date',
     }
 
-    function createTask(text, done = false){
+    function createTask(text, date = '', done = false){
         let group = null;
-        return { text, done, group}
+        return { text, done, date, group}
     }
 
     /**
@@ -29,25 +30,29 @@ const Task = (()=>{
         const container = document.createElement('div');
         const pText = document.createElement('p');
         const ckbox = document.createElement('input');
+        const dateLabel = taskObj.date ? document.createElement('p') : null;
         const deleteIcon = new Image()
         const dragIcon = new Image()
-        let groupLabel = null;
-        if(taskObj.group !== null && taskObj.group !== ''){
-            groupLabel = document.createElement('p');
+        const groupLabel = taskObj.group ? document.createElement('p') : null;
+
+        // add classes
+        if(taskObj.group){
             groupLabel.classList.add(CSS.groupLabel)
             groupLabel.textContent = taskObj.group;
         }
-
-        // add classes
+        if (taskObj.date) { 
+            dateLabel.classList.add(CSS.dateLabel) 
+            dateLabel.textContent = `Due: ${taskObj.date}`;
+        };
         container.classList.add('task');
         dragIcon.classList.add('draggable');
         deleteIcon.classList.add(CSS.deleteIcon);
         ckbox.classList.add(CSS.checkbox);
         pText.classList.add(CSS.taskName);
+        
         // add attributes
         dragIcon.setAttribute('draggable', 'true');
         ckbox.setAttribute('type', 'checkbox');
-        
 
         pText.textContent = taskObj.text;
         dragIcon.src = DragIcon;
@@ -62,12 +67,12 @@ const Task = (()=>{
             pText.classList.add('done');
         }
 
+        // FUNCTIONS 
         function deleteTaskHandler(){
             if (pubsub){
                 pubsub.emit(Task.EVENTS.deleteTask, taskObj.text);
             }
         };
-        
         function inputHandler(){
             taskObj.done = !taskObj.done;
             pubsub.emit(EVENTS.taskStatusChange, taskObj);
@@ -77,16 +82,6 @@ const Task = (()=>{
                 pText.classList.remove('done');
             }
         }
-
-        // append
-        container.appendChild(dragIcon);
-        container.appendChild(ckbox);
-        container.appendChild(pText);
-        if(groupLabel){
-            container.appendChild(groupLabel);
-        }
-        container.appendChild(deleteIcon);
-
         function dragStartHandler(e){
             console.log('drag started')
             container.classList.add('dragging');
@@ -97,6 +92,14 @@ const Task = (()=>{
             console.log('drag ended')
             container.classList.remove('dragging');
         }
+
+        // append
+        container.appendChild(dragIcon);
+        container.appendChild(ckbox);
+        container.appendChild(pText);
+        if (dateLabel) { container.appendChild(dateLabel) };
+        if (groupLabel) { container.appendChild(groupLabel) };
+        container.appendChild(deleteIcon);
 
         return container;
     }
@@ -154,10 +157,10 @@ const TaskContainer = (doc, pubsub = null, storage = null) => {
         render();
     }
     /**
-     * @param {Task} task 
+     * @param {Task} name 
      */
-    const addTask = (task) => {
-        const newTask = Task.createTask(task);
+    const addTask = (name, date = '') => {
+        const newTask = Task.createTask(name, date);
         _tasks.push(newTask);
         updateStorage();
     };

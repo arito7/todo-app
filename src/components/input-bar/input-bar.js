@@ -38,7 +38,11 @@ const InputBarComponent = (enableDate = false)=>{
     dateAddbtnContainer.hide = () => {
         dateAddbtnContainer.style.display = 'none';
     }
-    
+    function getDate(){
+        if(enableDate){
+            return date.value;
+        }
+    }
     // add classes
     node.classList.add('textbar');
     textarea.classList.add('textbar-content');
@@ -92,7 +96,7 @@ const InputBarComponent = (enableDate = false)=>{
     node.appendChild(dateAddbtnContainer);
     node.appendChild(msg);
     
-    return {node, textarea, btn, msg, setPlaceholderText, setMsgShowCondition};
+    return {node, textarea, btn, msg, setPlaceholderText, setMsgShowCondition, getDate};
 };
 
 export {InputBarComponent}

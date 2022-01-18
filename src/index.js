@@ -16,16 +16,18 @@ import './index.css';
     inputBar.msg.textContent = 'Task already exists!'
     inputBar.btn.addEventListener('click', ()=>{
         if (!tasksContainer.contains(inputBar.textarea.value)){
-            tasksContainer.addTask(inputBar.textarea.value);   
+            tasksContainer.addTask(inputBar.textarea.value, inputBar.getDate());   
             pubsub.emit('task-change');
             inputBar.textarea.value = '';
-            inputBar.btn.toggle();
             inputBar.msg.style.display = 'none';
         } else {
             inputBar.msg.style.display = 'block';
         }
     })
-    
+    inputBar.setMsgShowCondition(()=>{
+        return tasksContainer.contains(inputBar.textarea.value)
+    })
+
     const body = document.querySelector('body');
     const container = document.createElement('div'); // holds sidebar and main content
     container.classList.add('container');
@@ -46,7 +48,4 @@ import './index.css';
     container.appendChild(content);
     body.appendChild(header);
     body.appendChild(container);
-    
-    
-    
 })();
