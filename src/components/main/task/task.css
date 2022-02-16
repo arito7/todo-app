@@ -1,0 +1,58 @@
+.task {
+  display: grid;
+  grid-template-columns: auto auto 7fr auto auto auto;
+  align-items: center;
+  justify-items: start;
+  gap: 1rem;
+}
+
+.task > input[type='checkbox'] {
+  height: 1.25rem;
+  width: 1.25rem;
+}
+
+.task > input[type='checkbox']:hover {
+  cursor: pointer;
+}
+
+.task > .done {
+  text-decoration: line-through;
+  color: #565656;
+}
+
+.task > .delete {
+  grid-column: -1;
+}
+
+.dragging {
+  opacity: 0.5;
+}
+
+.draggable:hover {
+  cursor: move;
+}
+
+.group-label {
+  background-color: #ababab;
+  border-radius: 16px;
+  padding: 8px 16px;
+  margin: 0;
+}
+
+.task > .date {
+  background-color: #ababab;
+  padding: 0.5rem;
+  color: #000;
+  border-radius: 0.5rem;
+}
+
+.task > svg {
+  width: 1.5rem;
+  height: 1.5rem;
+  cursor: pointer;
+}
+
+.task > svg:hover {
+  color: #b93d3d;
+  scale: 1.1;
+}
