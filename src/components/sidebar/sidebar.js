@@ -12,7 +12,7 @@ import uniqid from 'uniqid';
  */
 
 const Sidebar = (props) => {
-  const { data } = props;
+  const { data, setSelectedGroup } = props;
   const [input, setInput] = useState('');
   const onInputChange = (e) => {
     if (e.target.value) {
@@ -29,6 +29,9 @@ const Sidebar = (props) => {
     data.removeGroup(id);
   };
 
+  const onGroupClick = (groupname) => {
+    setSelectedGroup(groupname);
+  };
   return (
     <div className="sidebar">
       <input
@@ -41,33 +44,53 @@ const Sidebar = (props) => {
       <button className="show-all" onClick={onGroupAdd}>
         Create New Group
       </button>
-      <button>Show All</button>
+      <button
+        onClick={() => {
+          setSelectedGroup('');
+        }}
+      >
+        Show All
+      </button>
       <ul className="groups">
         {data.groups.map((group) => {
           return (
-            <div
-              key={group.id}
-              className="group"
-              onDragOver={(e) => {
-                e.preventDefault();
-              }}
-              onDrop={(e) => {
-                e.preventDefault();
-                const taskid = e.dataTransfer.getData('taskid');
-                data.setTaskGroup(taskid, group.name);
-                console.log(e.target);
-              }}
-            >
-              <h5>{group.name}</h5>
-              <MdDelete
-                onClick={() => {
-                  onDelete(group.id);
-                }}
-              />
-            </div>
+            <Group
+              group={group}
+              onDelete={onDelete}
+              onGroupClick={onGroupClick}
+            />
           );
         })}
       </ul>
+    </div>
+  );
+};
+
+const Group = (props) => {
+  const { group, onDelete, onGroupClick } = props;
+  return (
+    <div
+      onClick={() => {
+        onGroupClick(group.name);
+      }}
+      key={group.id}
+      className="group"
+      onDragOver={(e) => {
+        e.preventDefault();
+      }}
+      onDrop={(e) => {
+        e.preventDefault();
+        const taskid = e.dataTransfer.getData('taskid');
+        data.setTaskGroup(taskid, group.name);
+        console.log(e.target);
+      }}
+    >
+      <h5 className="group-name">{group.name}</h5>
+      <MdDelete
+        onClick={() => {
+          onDelete(group.id);
+        }}
+      />
     </div>
   );
 };
