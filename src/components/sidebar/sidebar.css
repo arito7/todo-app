@@ -1,45 +1,55 @@
 .sidebar {
-    background-color: #dedede;
-    display: flex;
-    flex-direction: column;
-    max-width: 20%;
-    justify-content: start;
+  background-color: #dedede;
+  display: grid;
+  padding: 1rem;
+  height: 100%;
+  align-content: start;
+  grid-column: 1;
+  grid-row: 2;
 }
 
+.sidebar-input {
+  text-align: center;
+  padding: 0.75rem;
+  font-size: 1rem;
+}
 .sidebar > button {
-    padding: 16px;
-    margin: 16px;
-    background-color: #fcfcfc;
-    border-color: #acacac;
+  background-color: #fcfcfc;
+  border-color: #acacac;
 }
 
-.menu-item {
-    padding: 16px;
-    margin: 8px;
-    border-radius: 8px;
-    display: flex;
-    align-items: center;
-    cursor: pointer;
+.groups {
+  padding-top: 1rem;
+  display: grid;
+  gap: 0.5rem;
 }
-.menu-item:hover{
-    background-color: #aeaeae;
+.group {
+  padding: 0.75rem;
+  border-radius: 0.25rem;
+  cursor: pointer;
+  font-size: 1.1rem;
+  display: grid;
+  grid-template-columns: 1fr auto;
+}
+.group:-moz-drag-over {
+  background-color: red;
+}
+.group > svg:hover {
+  scale: 1.2;
+}
+.group:hover {
+  background-color: #aeaeae;
 }
 
-.menu-item:-moz-drag-over{
-    background-color: red;
-}
-
-.sidebar > .menu-item-container > .menu-item > .menu-item-name {
-    margin: 0;
-    flex: 1;
-    padding-top: 0;
+.group:-moz-drag-over {
+  background-color: red;
 }
 
 #selected {
-    background-color: #565656;
-    color: #fefefe;
+  background-color: #565656;
+  color: #fefefe;
 }
 
 #dragged-over {
-    background-color: #aeaeae;
+  background-color: #aeaeae;
 }
