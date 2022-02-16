@@ -14,19 +14,27 @@ import uniqid from 'uniqid';
 const Sidebar = (props) => {
   const { data, setSelectedGroup } = props;
   const [input, setInput] = useState('');
+  const [warning, setWarning] = useState('');
+
   const onInputChange = (e) => {
-    if (e.target.value) {
-      setInput(e.target.value);
-    }
+    setInput(e.target.value);
   };
 
   const onGroupAdd = () => {
-    data.addGroup({ id: uniqid(), name: input });
-    setInput('');
+    if (input) {
+      if (data.addGroup({ id: uniqid(), name: input })) {
+        setInput('');
+      } else {
+        setWarning('This group already exists!');
+      }
+    } else {
+      setWarning('Group name cannot be blank!');
+    }
   };
 
   const onDelete = (id) => {
     data.removeGroup(id);
+    setSelectedGroup('');
   };
 
   const onGroupClick = (groupname) => {
@@ -41,10 +49,12 @@ const Sidebar = (props) => {
         value={input}
         onChange={onInputChange}
       />
-      <button className="show-all" onClick={onGroupAdd}>
+      {!!warning ? <p className="warning"> {warning}</p> : null}
+      <button className="create-group" onClick={onGroupAdd}>
         Create New Group
       </button>
       <button
+        className="show-all"
         onClick={() => {
           setSelectedGroup('');
         }}

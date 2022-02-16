@@ -5,6 +5,7 @@
   height: 100%;
   align-content: start;
   grid-column: 1;
+  gap: 0.5rem;
   grid-row: 2;
 }
 
@@ -13,11 +14,26 @@
   padding: 0.75rem;
   font-size: 1rem;
 }
-.sidebar > button {
-  background-color: #fcfcfc;
+.sidebar > .warning {
+  background-color: #e49595;
+  padding: 1rem;
+  margin: 0;
+  margin-top: -0.5rem;
+  text-align: center;
+  color: #751111;
+  border-bottom-left-radius: 0.5rem;
+  border-bottom-right-radius: 0.5rem;
+}
+.sidebar > .create-group {
+  background-color: #58c24a;
+  color: #fff;
   border-color: #acacac;
 }
-
+.sidebar > .create-group:hover {
+  background-color: #42a835;
+  color: #fff;
+  border-color: #acacac;
+}
 .groups {
   padding-top: 1rem;
   display: grid;
