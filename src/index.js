@@ -1,11 +1,12 @@
-import { headerComponent } from './components/header/header';
+import Header from './components/header/header';
 import { PubSub } from './components/pubsub';
 import { TaskContainer } from './components/task/task';
 import { Storage } from './components/storage/storage';
 import { Sidebar } from './components/sidebar/sidebar';
 import { InputBarComponent } from './components/input-bar/input-bar';
 import './index.css';
-
+import ReactDOM from 'react-dom';
+import React from 'react';
 (() => {
   const pubsub = PubSub();
   const storage = Storage();
@@ -29,11 +30,14 @@ import './index.css';
   });
 
   const body = document.querySelector('body');
+  const root = document.createElement('div');
+  root.id = 'root';
+  body.appendChild(root);
+  ReactDOM.render(<Header />, root);
   const container = document.createElement('div'); // holds sidebar and main content
   container.classList.add('container');
   const content = document.createElement('div'); // holds main content
   content.classList.add('content');
-  const header = headerComponent(document);
   const sidebar = Sidebar(pubsub, storage);
 
   addEventListener('drop', (e) => {
@@ -46,6 +50,5 @@ import './index.css';
   content.appendChild(tasksContainer.container);
   container.appendChild(sidebar);
   container.appendChild(content);
-  body.appendChild(header);
   body.appendChild(container);
 })();

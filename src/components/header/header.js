@@ -1,16 +1,13 @@
 import './header.css';
+import React from 'react';
 
-const headerComponent = (doc)=>{
-    const container = doc.createElement('div');
-    container.classList.add('header-container');
-    const h1Title = doc.createElement('h1');
-    h1Title.textContent = "Todo App";
-    const btnNewNote = doc.createElement('button');
-    btnNewNote.textContent = 'New Note';
-
-    container.appendChild(h1Title);
-
-    return container;
+const Header = () => {
+  return (
+    <div className="header-container">
+      <h1>Todo App</h1>
+      <button>New Note</button>
+    </div>
+  );
 };
 
-export {headerComponent};
+export default Header;
