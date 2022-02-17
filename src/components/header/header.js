@@ -1,16 +1,14 @@
 import './header.css';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { GoogleAuthProvider, signInWithPopup, signOut } from 'firebase/auth';
 
 const Header = (props) => {
   const provider = new GoogleAuthProvider();
-  const { auth } = props;
-  const [user, setUser] = useState(() => {
-    if (auth) {
-      return auth.currentUser;
-    }
-    return null;
-  });
+  const { auth, user } = props;
+
+  useEffect(() => {
+    console.log('user status changed');
+  }, [user]);
 
   function onSignInClick() {
     signInWithPopup(auth, provider)
@@ -21,7 +19,6 @@ const Header = (props) => {
         const token = credential.accessToken;
         // the signed in user info
         const user = result.user;
-        setUser(user);
       })
       .catch((error) => {
         const errorCode = error.code;
@@ -32,14 +29,15 @@ const Header = (props) => {
         const credential = GoogleAuthProvider.credentialFromError(error);
       });
   }
+
   const onSignOut = () => {
     signOut(auth)
       .then(() => {
         console.log('logout successful');
-        setUser(auth.currentUser);
       })
       .catch((error) => console.log(error));
   };
+
   return (
     <div className="header">
       <h1>Todo App</h1>
