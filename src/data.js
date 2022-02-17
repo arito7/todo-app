@@ -1,7 +1,23 @@
-import { useState } from 'react';
+import {
+  doc,
+  collection,
+  setDoc,
+  onSnapshot,
+  query,
+  deleteDoc,
+  where,
+  getDocs,
+  CollectionReference,
+} from 'firebase/firestore';
+import { useEffect, useState } from 'react';
+import {
+  addTask as dbAddTask,
+  deleteTask as dbDeleteTask,
+  db,
+} from './firebase/firestore';
 import Storage from './components/storage/storage';
 
-const Data = () => {
+const Data = (user) => {
   const storage = Storage();
   const TASKS_KEY = 2;
   const GROUPS_KEY = 3;
@@ -20,6 +36,22 @@ const Data = () => {
     return [];
   });
 
+  useEffect(() => {
+    let unsub = null;
+    if (user) {
+      const userCollRef = collection(db, user.uid);
+      const q = query(userCollRef);
+      unsub = onSnapshot(q, (querySnapshot) => {
+        const tempTasks = [];
+        querySnapshot.forEach((mDoc) => {
+          tempTasks.push(mDoc.data());
+        });
+        setTasks(tempTasks);
+      });
+    }
+    return unsub;
+  }, [user]);
+
   const mUpdateTasks = (t) => {
     storage.add(TASKS_KEY, JSON.stringify(t));
     setTasks(JSON.parse(storage.get(TASKS_KEY)));
@@ -37,19 +69,32 @@ const Data = () => {
    * @returns {Boolean} true on successful add, false otherwise
    */
   const addTask = (task) => {
-    if (task.name !== '' && !tasks.find((t) => t.name === task.name)) {
-      mUpdateTasks(tasks.concat(task));
-      return true;
+    if (user) {
+      try {
+        dbAddTask(user.uid, task);
+      } catch (error) {
+        console.error(error);
+        return false;
+      }
+    } else {
+      if (task.name !== '' && !tasks.find((t) => t.name === task.name)) {
+        mUpdateTasks(tasks.concat(task));
+        return true;
+      }
+      return false;
     }
-    return false;
   };
 
   const removeTask = (id) => {
-    const i = tasks.findIndex((task) => task.id === id);
-    if (i !== -1) {
-      const tempTasks = [...tasks];
-      tempTasks.splice(i, 1);
-      mUpdateTasks(tempTasks);
+    if (user) {
+      dbDeleteTask(user.uid, id);
+    } else {
+      const i = tasks.findIndex((task) => task.id === id);
+      if (i !== -1) {
+        const tempTasks = [...tasks];
+        tempTasks.splice(i, 1);
+        mUpdateTasks(tempTasks);
+      }
     }
   };
 
