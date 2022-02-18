@@ -45,6 +45,11 @@ const Main = (props) => {
     <div className="main">
       <div className="head">
         <input
+          onKeyDown={(e) => {
+            if (e.key === 'Enter') {
+              onAddTask();
+            }
+          }}
           type="text"
           value={input}
           placeholder="New Task"
