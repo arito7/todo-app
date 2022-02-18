@@ -12,7 +12,7 @@
 .main > .head,
 .main > .tasks {
   padding: 1rem;
-  background-color: #fefefe;
+  background-color: var(--white);
   border-radius: 0.5rem;
 }
 

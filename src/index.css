@@ -1,6 +1,9 @@
 :root {
   --white: #fefefe;
   --header-bg: #343434;
+  --sidebar-bg: #dedede;
+  --warning-bg: #e49595;
+  --warning-text: #751111;
 }
 
 * {
