@@ -81,6 +81,7 @@ const Sidebar = (props) => {
         {data.groups.map((group) => {
           return (
             <Group
+              key={group.id}
               data={data}
               group={group}
               onDelete={onDelete}
