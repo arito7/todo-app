@@ -53,6 +53,11 @@ const Sidebar = (props) => {
   return (
     <div className="sidebar">
       <input
+        onKeyDown={(e) => {
+          if (e.key === 'Enter') {
+            onGroupAdd();
+          }
+        }}
         className="sidebar-input"
         type="text"
         placeholder="Group Name"
