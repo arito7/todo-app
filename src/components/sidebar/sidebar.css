@@ -48,6 +48,10 @@
   grid-template-columns: 1fr auto;
 }
 
+.group.dragged-over {
+  background-color: #2856d486;
+}
+
 .group.selected {
   background-color: #857979;
   color: var(--white);

@@ -101,6 +101,7 @@ const Sidebar = (props) => {
 
 const Group = (props) => {
   const { data, group, onDelete, onGroupClick, selectedGroup } = props;
+  const [draggedOver, setDraggedOver] = useState(false);
   return (
     <div
       onClick={() => {
@@ -109,9 +110,13 @@ const Group = (props) => {
       key={group.id}
       className={`fade-in group ${
         selectedGroup === group.name ? 'selected' : ''
-      }`}
+      } ${draggedOver ? 'dragged-over' : ''}`}
       onDragOver={(e) => {
         e.preventDefault();
+        setDraggedOver(true);
+      }}
+      onDragLeave={() => {
+        setDraggedOver(false);
       }}
       onDrop={(e) => {
         e.preventDefault();
