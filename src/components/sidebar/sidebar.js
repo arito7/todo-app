@@ -15,8 +15,15 @@ const Sidebar = (props) => {
   const { data, selectedGroup, setSelectedGroup } = props;
   const [input, setInput] = useState('');
   const [warning, setWarning] = useState('');
+  const [showAllBtnDisabled, setShowAllBtnDisabled] = useState(true);
 
-  useEffect(() => {}, [selectedGroup]);
+  useEffect(() => {
+    if (selectedGroup) {
+      setShowAllBtnDisabled(false);
+    } else {
+      setShowAllBtnDisabled(true);
+    }
+  }, [selectedGroup]);
 
   const onInputChange = (e) => {
     setInput(e.target.value);
@@ -42,6 +49,7 @@ const Sidebar = (props) => {
   const onGroupClick = (groupname) => {
     setSelectedGroup(groupname);
   };
+
   return (
     <div className="sidebar">
       <input
@@ -56,6 +64,7 @@ const Sidebar = (props) => {
         Create New Group
       </button>
       <button
+        disabled={showAllBtnDisabled}
         className="show-all"
         onClick={() => {
           setSelectedGroup('');
