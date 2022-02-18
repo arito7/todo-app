@@ -122,6 +122,7 @@ const Group = (props) => {
         e.preventDefault();
         const taskid = e.dataTransfer.getData('taskid');
         data.setTaskGroup(taskid, group.name);
+        setDraggedOver(false);
       }}
     >
       <h5 className="group-name">{group.name}</h5>
