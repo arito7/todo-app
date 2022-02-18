@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import './main.css';
 import Task from './task/task';
 import uniqid from 'uniqid';
@@ -6,10 +6,22 @@ const Main = (props) => {
   const { data, selectedGroup } = props;
   const [input, setInput] = useState('');
   const [date, setDate] = useState('');
+  const [showNoTasks, setShowNoTasks] = useState(false);
+
+  useEffect(() => {
+    setShowNoTasks(() => {
+      if (selectedGroup) {
+        const filtered = data.tasks.filter(
+          (task) => task.group === selectedGroup
+        );
+        return filtered.length === 0;
+      }
+      return false;
+    });
+  }, [selectedGroup]);
 
   const onAddTask = () => {
     data.addTask({ id: uniqid(), name: input, done: false, date });
-    console.log(data.tasks);
     setInput('');
   };
 
@@ -42,6 +54,7 @@ const Main = (props) => {
         <button onClick={onAddTask}>Add Task</button>
       </div>
       <div className="tasks">
+        {showNoTasks ? <NoTasks /> : null}
         {data.tasks
           .filter((task) => {
             if (selectedGroup) {
@@ -60,6 +73,14 @@ const Main = (props) => {
             );
           })}
       </div>
+    </div>
+  );
+};
+
+const NoTasks = () => {
+  return (
+    <div className="no-tasks">
+      <p> No Tasks have been assigned to this group yet.</p>
     </div>
   );
 };
