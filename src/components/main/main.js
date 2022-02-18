@@ -43,9 +43,12 @@ const Main = (props) => {
       </div>
       <div className="tasks">
         {data.tasks
-          .filter(
-            (task) => selectedGroup === '' || task.group === selectedGroup
-          )
+          .filter((task) => {
+            if (selectedGroup) {
+              return selectedGroup === task.group;
+            }
+            return true;
+          })
           .map((task) => {
             return (
               <Task

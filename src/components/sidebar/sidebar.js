@@ -1,5 +1,5 @@
 import './sidebar.css';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { MdDelete } from 'react-icons/md';
 import uniqid from 'uniqid';
 /**
@@ -12,9 +12,11 @@ import uniqid from 'uniqid';
  */
 
 const Sidebar = (props) => {
-  const { data, setSelectedGroup } = props;
+  const { data, selectedGroup, setSelectedGroup } = props;
   const [input, setInput] = useState('');
   const [warning, setWarning] = useState('');
+
+  useEffect(() => {}, [selectedGroup]);
 
   const onInputChange = (e) => {
     setInput(e.target.value);
@@ -68,6 +70,7 @@ const Sidebar = (props) => {
               data={data}
               group={group}
               onDelete={onDelete}
+              selectedGroup={selectedGroup}
               onGroupClick={onGroupClick}
             />
           );
@@ -77,15 +80,20 @@ const Sidebar = (props) => {
   );
 };
 
+/**
+ * Group data format
+ * {id, name}
+ */
+
 const Group = (props) => {
-  const { data, group, onDelete, onGroupClick } = props;
+  const { data, group, onDelete, onGroupClick, selectedGroup } = props;
   return (
     <div
       onClick={() => {
         onGroupClick(group.name);
       }}
       key={group.id}
-      className="group"
+      className={`group ${selectedGroup === group.name ? 'selected' : ''}`}
       onDragOver={(e) => {
         e.preventDefault();
       }}

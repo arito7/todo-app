@@ -17,7 +17,11 @@ const App = () => {
   return (
     <div className="app">
       <Header user={userHook.user} auth={auth} />
-      <Sidebar data={data} setSelectedGroup={setSelectedGroup} />
+      <Sidebar
+        data={data}
+        selectedGroup={selectedGroup}
+        setSelectedGroup={setSelectedGroup}
+      />
       <Main data={data} selectedGroup={selectedGroup} />
     </div>
   );

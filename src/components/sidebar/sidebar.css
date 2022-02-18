@@ -48,6 +48,11 @@
   grid-template-columns: 1fr auto;
 }
 
+.group.selected {
+  background-color: #857979;
+  color: white;
+}
+
 .group > .group-name::first-letter {
   text-transform: capitalize;
 }
@@ -60,6 +65,8 @@
 }
 .group:hover {
   background-color: #aeaeae;
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+  transition: 300ms;
 }
 
 .group:-moz-drag-over {
