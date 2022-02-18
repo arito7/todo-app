@@ -1,0 +1,79 @@
+:root {
+  --white: #fefefe;
+  --header-bg: #343434;
+  --sidebar-bg: #dedede;
+  --warning-bg: #e49595;
+  --warning-text: #751111;
+}
+
+* {
+  box-sizing: border-box;
+}
+@font-face {
+  font-family: ubuntu;
+  src: url('./fonts/Ubuntu-Regular.ttf');
+}
+
+body,
+ul,
+h5,
+ol {
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: ubuntu, Geneva, Tahoma, sans-serif;
+  height: 100vh;
+  background-color: #565656;
+}
+
+#root {
+  height: 100%;
+  width: 100%;
+}
+
+button {
+  padding: 0.75rem;
+  border-radius: 0.5rem;
+  border: 1px solid #dedede;
+  font-size: 1rem;
+  cursor: pointer;
+}
+
+.btn {
+  cursor: pointer;
+}
+
+button:hover,
+.btn:hover {
+  scale: 0.99;
+}
+
+button:active,
+.btn:active {
+  scale: 0.97;
+}
+
+.delete:hover {
+  color: #b93d3d;
+}
+
+.fade-in {
+  animation-name: fadeIn;
+  animation-duration: 500ms;
+  animation-timing-function: cubic-bezier(0.075, 0.82, 0.165, 1);
+}
+
+@keyframes fadeIn {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+.white {
+  color: var(--white);
+}

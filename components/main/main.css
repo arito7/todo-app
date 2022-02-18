@@ -1,0 +1,41 @@
+.main {
+  grid-column: 2;
+  grid-row: 2;
+  display: grid;
+  padding: 1rem;
+  gap: 1rem;
+  justify-content: center;
+  grid-template-columns: 1fr;
+  grid-template-rows: auto 1fr;
+}
+
+.main > .head,
+.main > .tasks {
+  padding: 1rem;
+  background-color: var(--white);
+  border-radius: 0.5rem;
+}
+
+.main > .head {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: auto auto;
+  justify-items: center;
+  gap: 1rem;
+}
+
+.main > .head > input[type='text'] {
+  border: none;
+  width: 100%;
+  font-size: 1.5rem;
+  grid-column: 1/-1;
+}
+
+.main > .head > input[type='date'] {
+  justify-self: start;
+  border: none;
+}
+
+.main > .head > button {
+  justify-self: end;
+}
