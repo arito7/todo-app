@@ -65,6 +65,7 @@ const Sidebar = (props) => {
         {data.groups.map((group) => {
           return (
             <Group
+              data={data}
               group={group}
               onDelete={onDelete}
               onGroupClick={onGroupClick}
@@ -77,7 +78,7 @@ const Sidebar = (props) => {
 };
 
 const Group = (props) => {
-  const { group, onDelete, onGroupClick } = props;
+  const { data, group, onDelete, onGroupClick } = props;
   return (
     <div
       onClick={() => {
@@ -92,7 +93,6 @@ const Group = (props) => {
         e.preventDefault();
         const taskid = e.dataTransfer.getData('taskid');
         data.setTaskGroup(taskid, group.name);
-        console.log(e.target);
       }}
     >
       <h5 className="group-name">{group.name}</h5>
@@ -104,4 +104,5 @@ const Group = (props) => {
     </div>
   );
 };
+
 export default Sidebar;

@@ -6,25 +6,49 @@ import {
   getDocs,
   where,
   query,
+  updateDoc,
+  setDoc,
 } from 'firebase/firestore';
 
 const db = getFirestore();
 
 const addTask = (userid, task) => {
-  const userCollRef = collection(db, userid);
-  addDoc(userCollRef, task).then((docRef) => {
-    console.log('added', docRef.id);
-  });
+  const userCollRef = collection(db, userid, 'data', 'tasks');
+  addDoc(userCollRef, task);
 };
 
 const deleteTask = (userid, taskid) => {
-  const userCollRef = collection(db, userid);
+  const userCollRef = collection(db, userid, 'data', 'tasks');
   getDocs(query(userCollRef, where('id', '==', taskid))).then((snapshot) => {
     snapshot.forEach((doc) => {
-      console.log('deleting task', doc.data().id);
-      console.log(doc.ref);
       deleteDoc(doc.ref);
     });
   });
 };
-export { db, addTask, deleteTask };
+
+const updateTask = (userid, task) => {
+  const taskCollRef = collection(db, userid, 'data', 'tasks');
+  getDocs(query(taskCollRef, where('id', '==', task.id))).then((snapshot) => {
+    snapshot.forEach((doc) => {
+      if (doc.data().id === task.id) {
+        setDoc(doc.ref, task);
+      }
+    });
+  });
+};
+
+const addGroup = (userid, group) => {
+  const groupCollRef = collection(db, userid, 'data', 'groups');
+  addDoc(groupCollRef, group);
+};
+
+const deleteGroup = (userid, groupid) => {
+  const groupCollRef = collection(db, userid, 'data', 'groups');
+  getDocs(query(groupCollRef, where('id', '==', groupid))).then((snapshot) => {
+    snapshot.forEach((doc) => {
+      deleteDoc(doc.ref);
+    });
+  });
+};
+
+export { db, addTask, deleteTask, addGroup, deleteGroup, updateTask };

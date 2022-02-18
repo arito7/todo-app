@@ -1,18 +1,11 @@
-import {
-  doc,
-  collection,
-  setDoc,
-  onSnapshot,
-  query,
-  deleteDoc,
-  where,
-  getDocs,
-  CollectionReference,
-} from 'firebase/firestore';
+import { collection, onSnapshot, query } from 'firebase/firestore';
 import { useEffect, useState } from 'react';
 import {
   addTask as dbAddTask,
   deleteTask as dbDeleteTask,
+  addGroup as dbAddGroup,
+  deleteGroup as dbDeleteGroup,
+  updateTask as dbUpdateTask,
   db,
 } from './firebase/firestore';
 import Storage from './components/storage/storage';
@@ -39,7 +32,7 @@ const Data = (user) => {
   useEffect(() => {
     let unsub = null;
     if (user) {
-      const userCollRef = collection(db, user.uid);
+      const userCollRef = collection(db, user.uid, 'data', 'tasks');
       const q = query(userCollRef);
       unsub = onSnapshot(q, (querySnapshot) => {
         const tempTasks = [];
@@ -47,6 +40,22 @@ const Data = (user) => {
           tempTasks.push(mDoc.data());
         });
         setTasks(tempTasks);
+      });
+    }
+    return unsub;
+  }, [user]);
+
+  useEffect(() => {
+    let unsub = null;
+    if (user) {
+      const userGroupRef = collection(db, user.uid, 'data', 'groups');
+      const q = query(userGroupRef);
+      unsub = onSnapshot(q, (qSnapshot) => {
+        const tempGroups = [];
+        qSnapshot.forEach((mDoc) => {
+          tempGroups.push(mDoc.data());
+        });
+        setGroups(tempGroups);
       });
     }
     return unsub;
@@ -69,28 +78,34 @@ const Data = (user) => {
    * @returns {Boolean} true on successful add, false otherwise
    */
   const addTask = (task) => {
-    if (user) {
-      try {
-        dbAddTask(user.uid, task);
-      } catch (error) {
-        console.error(error);
-        return false;
-      }
-    } else {
-      if (task.name !== '' && !tasks.find((t) => t.name === task.name)) {
+    if (task.name && !tasks.find((t) => t.name === task.name)) {
+      if (user) {
+        // if user is signed in
+        try {
+          dbAddTask(user.uid, task);
+        } catch (error) {
+          console.error(error);
+          return false;
+        }
+      } else {
+        // local storage
         mUpdateTasks(tasks.concat(task));
         return true;
       }
-      return false;
     }
+    return false;
   };
 
   const removeTask = (id) => {
-    if (user) {
-      dbDeleteTask(user.uid, id);
-    } else {
-      const i = tasks.findIndex((task) => task.id === id);
-      if (i !== -1) {
+    const i = tasks.findIndex((task) => task.id === id);
+    if (i !== -1) {
+      if (user) {
+        try {
+          dbDeleteTask(user.uid, id);
+        } catch (error) {
+          console.error(error);
+        }
+      } else {
         const tempTasks = [...tasks];
         tempTasks.splice(i, 1);
         mUpdateTasks(tempTasks);
@@ -106,7 +121,15 @@ const Data = (user) => {
    */
   const addGroup = (group) => {
     if (group.name !== '' && !groups.find((g) => g.name === group.name)) {
-      mUpdateGroups(groups.concat(group));
+      if (user) {
+        try {
+          dbAddGroup(user.uid, group);
+        } catch (error) {
+          console.error(error);
+        }
+      } else {
+        mUpdateGroups(groups.concat(group));
+      }
       return true;
     }
     return false;
@@ -115,16 +138,24 @@ const Data = (user) => {
   const removeGroup = (id) => {
     const i = groups.findIndex((group) => group.id === id);
     if (i !== -1) {
-      const tasksCopy = [...tasks];
-      const groupsCopy = [...groups];
-      const removedGroup = groupsCopy.splice(i, 1);
-      tasksCopy.forEach((t) => {
-        if (t.group === removedGroup[0].name) {
-          t.group = '';
+      if (user) {
+        try {
+          dbDeleteGroup(user.uid, id);
+        } catch (error) {
+          console.error(error);
         }
-      });
-      mUpdateTasks(tasksCopy);
-      mUpdateGroups(groupsCopy);
+      } else {
+        const tasksCopy = [...tasks];
+        const groupsCopy = [...groups];
+        const removedGroup = groupsCopy.splice(i, 1);
+        tasksCopy.forEach((t) => {
+          if (t.group === removedGroup[0].name) {
+            t.group = '';
+          }
+        });
+        mUpdateTasks(tasksCopy);
+        mUpdateGroups(groupsCopy);
+      }
     }
   };
 
@@ -133,17 +164,33 @@ const Data = (user) => {
     const task = tasksCopy.find((t) => t.id === id);
     if (task) {
       task.group = groupname;
+      if (user) {
+        try {
+          dbUpdateTask(user.uid, task);
+        } catch (error) {
+          console.error(error);
+        }
+      } else {
+        mUpdateTasks(tasksCopy);
+      }
     }
-    mUpdateTasks(tasksCopy);
   };
 
   const updateTask = (task) => {
     const i = tasks.findIndex((t) => t.id === task.id);
-    const tasksCopy = [...tasks];
     if (i !== -1) {
-      tasksCopy[i] = task;
+      if (user) {
+        try {
+          dbUpdateTask(user.uid, task);
+        } catch (error) {
+          console.error(error);
+        }
+      } else {
+        const tasksCopy = [...tasks];
+        tasksCopy[i] = task;
+        mUpdateTasks(tasksCopy);
+      }
     }
-    mUpdateTasks(tasksCopy);
   };
 
   return {
