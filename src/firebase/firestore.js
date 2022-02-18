@@ -44,11 +44,24 @@ const addGroup = (userid, group) => {
 
 const deleteGroup = (userid, groupid) => {
   const groupCollRef = collection(db, userid, 'data', 'groups');
-  getDocs(query(groupCollRef, where('id', '==', groupid))).then((snapshot) => {
-    snapshot.forEach((doc) => {
-      deleteDoc(doc.ref);
+  let groupName = '';
+  getDocs(query(groupCollRef, where('id', '==', groupid)))
+    .then((snapshot) => {
+      snapshot.forEach((doc) => {
+        groupName = doc.data().name;
+        deleteDoc(doc.ref);
+      });
+    })
+    .then(() => {
+      const taskCollRef = collection(db, userid, 'data', 'tasks');
+      getDocs(query(taskCollRef, where('group', '==', groupName))).then(
+        (snapshot) => {
+          snapshot.forEach((doc) => {
+            updateDoc(doc.ref, { group: '' });
+          });
+        }
+      );
     });
-  });
 };
 
 export { db, addTask, deleteTask, addGroup, deleteGroup, updateTask };
