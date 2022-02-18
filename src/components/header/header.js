@@ -39,7 +39,7 @@ const Header = (props) => {
   };
 
   return (
-    <div className="header">
+    <div className="header white">
       <h1>Todo App</h1>
       {user ? (
         <UserButton user={user} onSignOut={onSignOut} />

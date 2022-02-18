@@ -10,7 +10,7 @@ const Task = (props) => {
   return (
     <div
       draggable
-      className="task"
+      className="task fade-in"
       onDragStart={(e) => {
         e.dataTransfer.setData('taskid', task.id);
       }}

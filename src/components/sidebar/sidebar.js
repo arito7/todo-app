@@ -102,7 +102,9 @@ const Group = (props) => {
         onGroupClick(group.name);
       }}
       key={group.id}
-      className={`group ${selectedGroup === group.name ? 'selected' : ''}`}
+      className={`fade-in group ${
+        selectedGroup === group.name ? 'selected' : ''
+      }`}
       onDragOver={(e) => {
         e.preventDefault();
       }}
@@ -114,6 +116,7 @@ const Group = (props) => {
     >
       <h5 className="group-name">{group.name}</h5>
       <MdDelete
+        className="btn delete"
         onClick={() => {
           onDelete(group.id);
         }}

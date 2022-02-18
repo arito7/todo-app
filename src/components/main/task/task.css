@@ -4,8 +4,6 @@
   align-items: center;
   justify-items: start;
   gap: 1rem;
-  animation-name: fadeIn;
-  animation-duration: 500ms;
 }
 
 .task > input[type='checkbox'] {
@@ -51,22 +49,8 @@
 .task > svg {
   width: 1.5rem;
   height: 1.5rem;
-  cursor: pointer;
-}
-
-.task > svg:hover {
-  color: #b93d3d;
-  scale: 1.1;
 }
 
 .no-tasks {
   text-align: center;
-}
-@keyframes fadeIn {
-  0% {
-    opacity: 0;
-  }
-  100% {
-    opacity: 1;
-  }
 }

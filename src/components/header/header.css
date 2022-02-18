@@ -1,16 +1,15 @@
 .header {
+  margin: 0;
+  padding: 1rem;
+  background-color: var(--header-bg);
   display: grid;
   align-items: center;
-  grid-template-columns: 1fr 3fr 1fr;
-  margin: 0;
   justify-items: center;
-  padding: 1rem;
-  background-color: #343434;
+  grid-template-columns: 1fr 3fr 1fr;
 }
 
 .header > h1 {
   grid-column: 2;
-  color: #fefefe;
 }
 
 .header > button {
@@ -19,10 +18,9 @@
 
 .header > .user {
   display: grid;
+  align-items: center;
   grid-template-columns: auto auto auto;
   gap: 1rem;
-  color: #fefefe;
-  align-items: center;
 }
 
 .header > .user > img {

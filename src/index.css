@@ -1,3 +1,8 @@
+:root {
+  --white: #fefefe;
+  --header-bg: #343434;
+}
+
 * {
   box-sizing: border-box;
 }
@@ -33,6 +38,10 @@ button {
   cursor: pointer;
 }
 
+.btn {
+  cursor: pointer;
+}
+
 button:hover,
 .btn:hover {
   scale: 0.99;
@@ -41,4 +50,27 @@ button:hover,
 button:active,
 .btn:active {
   scale: 0.97;
+}
+
+.delete:hover {
+  color: #b93d3d;
+}
+
+.fade-in {
+  animation-name: fadeIn;
+  animation-duration: 500ms;
+  animation-timing-function: cubic-bezier(0.075, 0.82, 0.165, 1);
+}
+
+@keyframes fadeIn {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+.white {
+  color: var(--white);
 }
