@@ -24,6 +24,10 @@
   grid-column: -1;
 }
 
+.task > .name::first-letter {
+  text-transform: capitalize;
+}
+
 .dragging {
   opacity: 0.5;
 }

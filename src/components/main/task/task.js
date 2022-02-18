@@ -23,7 +23,7 @@ const Task = (props) => {
         checked={task.done}
         onChange={onCheckChange}
       />
-      <p className={task.done ? 'done' : ''}>{task.name}</p>
+      <p className={`name ${task.done ? 'done' : ''}`}>{task.name}</p>
       {!!task.group ? <p className="group-label">{task.group}</p> : null}
       {!!task.date ? (
         <div className="date">
