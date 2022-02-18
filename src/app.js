@@ -3,6 +3,7 @@ import { useUser, auth } from './firebase/auth';
 import './firebase/firestore';
 import Header from './components/header/header';
 import Sidebar from './components/sidebar/sidebar';
+import Footer from './components/footer/footer';
 import React, { useState } from 'react';
 import Main from './components/main/main';
 import Data from './data';
@@ -23,6 +24,7 @@ const App = () => {
         setSelectedGroup={setSelectedGroup}
       />
       <Main data={data} selectedGroup={selectedGroup} />
+      <Footer />
     </div>
   );
 };
